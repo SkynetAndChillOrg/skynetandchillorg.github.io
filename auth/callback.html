@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Tesla authorization callback</title>
+  <style>
+    body { font-family: sans-serif; max-width: 46rem; margin: 2rem auto; padding: 0 1rem; }
+    textarea { width: 100%; min-height: 7rem; font-family: Consolas, monospace; }
+    .warning { color: #8a1f11; }
+  </style>
+</head>
+<body>
+  <h1>Tesla authorization callback</h1>
+  <p class="warning">This code is a one-time credential. Do not publish, commit, or send it through chat. Close this tab after the local exchange.</p>
+  <p id="status">Reading callback...</p>
+  <label for="handoff">Local handoff payload</label>
+  <textarea id="handoff" readonly></textarea>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const payload = {
+      code: params.get("code") || "",
+      state: params.get("state") || "",
+      error: params.get("error") || "",
+      error_description: params.get("error_description") || ""
+    };
+    document.getElementById("handoff").value = JSON.stringify(payload);
+    document.getElementById("status").textContent = payload.error
+      ? "Tesla returned an authorization error."
+      : (payload.code ? "Authorization code received in this browser only." : "No authorization code is present.");
+    if (window.history.replaceState) {
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  </script>
+</body>
+</html>
